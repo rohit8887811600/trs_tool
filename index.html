@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novel Adaptation — AI Translator</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans:wght@300;400;500;600&family=Noto+Sans+Devanagari:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --surface3: #222230;
+    --teal: #00c9a7;
+    --teal-dim: #00c9a720;
+    --teal-mid: #00c9a740;
+    --gold: #f0c040;
+    --text: #e8e8f0;
+    --text-dim: #888899;
+    --text-muted: #555566;
+    --border: #2a2a3a;
+    --border-teal: #00c9a730;
+    --red: #ff4f4f;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 0%, #00c9a710 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, #00c9a708 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 16px 60px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 0 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+
+  .header-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--teal);
+    letter-spacing: 0.05em;
+  }
+
+  .header-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    background: var(--surface);
+    padding: 6px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .tab {
+    flex: 1;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    background: transparent;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .tab.active {
+    background: var(--teal);
+    color: #000;
+    font-weight: 600;
+  }
+
+  .tab:not(.active):hover {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  /* ── PANELS ── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── SECTION CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+
+  .card:focus-within {
+    border-color: var(--border-teal);
+  }
+
+  .card-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-teal);
+  }
+
+  /* ── INPUTS ── */
+  input[type="text"],
+  input[type="password"],
+  textarea,
+  select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    resize: none;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px var(--teal-dim);
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--text-muted);
+  }
+
+  select option {
+    background: var(--surface2);
+  }
+
+  /* ── API KEY SECTION ── */
+  .api-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .api-row input {
+    flex: 1;
+    font-family: monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+  }
+
+  .btn-icon {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 12px 14px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-icon:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+
+  .api-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    margin-top: 10px;
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .status-dot.ok { background: var(--teal); box-shadow: 0 0 6px var(--teal); }
+  .status-dot.err { background: var(--red); }
+
+  /* ── MODEL SELECT ── */
+  .model-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .model-card {
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .model-card.selected {
+    border-color: var(--teal);
+    background: var(--teal-dim);
+  }
+
+  .model-card:hover:not(.selected) {
+    border-color: var(--border-teal);
+  }
+
+  .model-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+
+  .model-card.selected .model-name { color: var(--teal); }
+
+  .model-info {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  .model-badge {
+    font-size: 0.65rem;
+    background: var(--teal-dim);
+    color: var(--teal);
+    border: 1px solid var(--border-teal);
+    border-radius: 4px;
+    padding: 1px 6px;
+    display: inline-block;
+    margin-top: 4px;
+  }
+
+  /* ── INSTRUCTIONS ── */
+  .instructions-area {
+    min-height: 220px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .char-count {
+    text-align: right;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  /* ── TRANSLATION PANEL ── */
+  .profile-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .profile-badge {
+    background: var(--teal-dim);
+    border: 1px solid var(--border-teal);
+    color: var(--teal);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .chapter-area {
+    min-height: 200px;
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    width: 100%;
+    background: var(--teal);
+    color: #000;
+    border: none;
+    border-radius: var(--radius);
+    padding: 16px;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: #00e0bb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px var(--teal-mid);
+  }
+
+  .btn-primary:disabled {
+    background: var(--surface3);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-secondary {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-dim);
+    padding: 8px 16px;
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+
+  /* ── LOADING ── */
+  .loading-bar {
+    display: none;
+    width: 100%;
+    height: 3px;
+    background: var(--surface2);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 12px;
+  }
+
+  .loading-bar.active { display: block; }
+
+  .loading-bar::after {
+    content: '';
+    display: block;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--teal), transparent);
+    animation: loading 1.4s ease-in-out infinite;
+  }
+
+  @keyframes loading {
+    0% { transform: translateX(-150%); }
+    100% { transform: translateX(350%); }
+  }
+
+  /* ── OUTPUT ── */
+  .output-container {
+    display: none;
+    margin-top: 16px;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .output-container.show { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .output-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .output-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .output-box {
+    background: var(--surface2);
+    border: 1px solid var(--border-teal);
+    border-radius: var(--radius);
+    padding: 20px;
+    font-family: 'Noto Sans Devanagari', 'Noto Sans', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.9;
+    color: var(--text);
+    white-space: pre-wrap;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+  .output-box::-webkit-scrollbar {
+    width: 6px;
+  }
+  .output-box::-webkit-scrollbar-track { background: var(--surface2); }
+  .output-box::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+  }
+
+  /* ── TOKEN STATS ── */
+  .token-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .stat-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--teal);
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 2px;
+  }
+
+  /* ── HISTORY ── */
+  .history-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .history-item:hover {
+    border-color: var(--border-teal);
+  }
+
+  .history-meta {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .history-preview {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    margin-top: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    opacity: 0.4;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--surface3);
+    border: 1px solid var(--border-teal);
+    color: var(--teal);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    transition: transform 0.3s ease;
+    z-index: 100;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── ERROR ── */
+  .error-box {
+    background: #ff4f4f15;
+    border: 1px solid #ff4f4f40;
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    color: #ff8888;
+    font-size: 0.85rem;
+    margin-top: 12px;
+    display: none;
+  }
+
+  .error-box.show { display: block; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+
+  .info-text {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 500px) {
+    .model-grid { grid-template-columns: 1fr; }
+    .token-stats { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <div class="header-title">📖 Novel Adaptation</div>
+      <div class="header-sub">AI Translation Tool</div>
+    </div>
+    <div id="apiIndicator" class="api-status">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText" style="font-size:0.75rem;color:var(--text-muted)">API Not Set</span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('settings')" id="tab-settings">
+      ⚙️ Settings
+    </button>
+    <button class="tab" onclick="switchTab('translate')" id="tab-translate">
+      📝 Translate
+    </button>
+    <button class="tab" onclick="switchTab('history')" id="tab-history">
+      🕐 History
+    </button>
+  </div>
+
+  <!-- ═══════════ SETTINGS PANEL ═══════════ -->
+  <div class="panel active" id="panel-settings">
+
+    <!-- API KEY -->
+    <div class="card">
+      <div class="card-label">🔑 AI Configuration</div>
+      <div class="api-row">
+        <input type="password" id="apiKey" placeholder="sk-ant-api03-..." />
+        <button class="btn-icon" onclick="toggleApiVisibility()">👁</button>
+        <button class="btn-icon" onclick="saveApiKey()">💾</button>
+      </div>
+      <div class="api-status" style="margin-top:10px;">
+        <div class="status-dot" id="apiDot"></div>
+        <span id="apiStatusMsg" style="font-size:0.78rem;color:var(--text-muted);">Key save karo</span>
+      </div>
+    </div>
+
+    <!-- MODEL SELECTION -->
+    <div class="card">
+      <div class="card-label">🤖 AI Model</div>
+      <div class="model-grid">
+        <div class="model-card selected" id="model-sonnet" onclick="selectModel('claude-sonnet-4-6')">
+          <div class="model-name">Sonnet 4.6</div>
+          <div class="model-info">Balanced · Fast</div>
+          <div class="model-badge">⭐ Recommended</div>
+        </div>
+        <div class="model-card" id="model-opus" onclick="selectModel('claude-opus-4-6')">
+          <div class="model-name">Opus 4.6</div>
+          <div class="model-info">Most Capable</div>
+          <div class="model-badge">💎 Premium</div>
+        </div>
+      </div>
+      <div class="info-text" style="margin-top:10px;">
+        💡 Sonnet = ~₹5/chapter &nbsp;|&nbsp; Opus = ~₹8.6/chapter (BTTH jaisi novel ke liye)
+      </div>
+    </div>
+
+    <!-- INSTRUCTIONS -->
+    <div class="card">
+      <div class="card-label">📋 Translation Instructions</div>
+      <textarea
+        class="instructions-area"
+        id="instructions"
+        placeholder="Yahan apni poori instructions paste karo...
+
+Jaise:
+- Translate into audiobook-friendly Hindi
+- Use modern colloquial language
+- Character name rules: Xiao Yan → ध्रुव
+- Don't use तू, तेरे — use तुम, तुम्हारे
+- Fantasy audiobook style
+- Dialogue structure rules..."
+        oninput="updateCharCount()"
+      ></textarea>
+      <div class="char-count">
+        <span id="instrCount">0</span> characters
+        &nbsp;·&nbsp;
+        ~<span id="instrTokens">0</span> tokens
+      </div>
+    </div>
+
+    <!-- STYLE EXAMPLE -->
+    <div class="card">
+      <div class="card-label">✨ Style Example (Optional)</div>
+      <textarea
+        style="min-height:120px;font-size:0.85rem;"
+        id="styleExample"
+        placeholder="Ek perfectly translated example paste karo (optional lekin recommended).
+
+AI iska style analyze karke baaki translations mein same tone follow karega..."
+      ></textarea>
+      <div class="info-text">
+        🎯 Yeh cache hoga — har chapter mein free mein reuse hoga
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="saveSettings()">
+      💾 Save Settings
+    </button>
+
+  </div>
+
+  <!-- ═══════════ TRANSLATE PANEL ═══════════ -->
+  <div class="panel" id="panel-translate">
+
+    <!-- Profile info -->
+    <div class="profile-row">
+      <div class="profile-badge">
+        🌐 <span id="profileModel">Sonnet 4.6</span> &nbsp;·&nbsp; Hindi
+      </div>
+      <button class="btn-secondary" onclick="switchTab('settings')">✏️ Edit</button>
+    </div>
+
+    <!-- Chapter Input -->
+    <div class="card">
+      <div class="card-label">📄 Chapter Text</div>
+      <textarea
+        class="chapter-area"
+        id="chapterInput"
+        placeholder="Yahan English novel chapter paste karo...
+
+(BTTH, TGR, ya koi bhi novel ka chapter)"
+        oninput="updateChapterCount()"
+      ></textarea>
+      <div class="char-count">
+        <span id="chapterCount">0</span> characters
+        &nbsp;·&nbsp;
+        ~<span id="chapterTokens">0</span> input tokens
+        &nbsp;·&nbsp;
+        Est. cost: <span id="estCost">₹0</span>
+      </div>
+    </div>
+
+    <!-- Translate Button -->
+    <button class="btn-primary" id="translateBtn" onclick="startTranslation()">
+      🚀 Start Adaptation
+    </button>
+
+    <!-- Loading -->
+    <div class="loading-bar" id="loadingBar"></div>
+    <div id="loadingMsg" style="font-size:0.8rem;color:var(--text-muted);text-align:center;margin-top:8px;display:none;">
+      ✨ AI translation chal rahi hai...
+    </div>
+
+    <!-- Error -->
+    <div class="error-box" id="errorBox"></div>
+
+    <!-- Output -->
+    <div class="output-container" id="outputContainer">
+      <div class="output-header">
+        <div class="output-title">✅ Hindi Translation</div>
+        <div class="output-actions">
+          <button class="btn-secondary" onclick="copyOutput()">📋 Copy</button>
+          <button class="btn-secondary" onclick="downloadOutput()">⬇️ Download</button>
+        </div>
+      </div>
+      <div class="output-box" id="outputBox"></div>
+
+      <!-- Token Stats -->
+      <div class="token-stats" id="tokenStats">
+        <div class="stat-box">
+          <div class="stat-value" id="statInput">—</div>
+          <div class="stat-label">Input Tokens</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="statOutput">—</div>
+          <div class="stat-label">Output Tokens</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="statCost">—</div>
+          <div class="stat-label">Cost (₹)</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════ HISTORY PANEL ═══════════ -->
+  <div class="panel" id="panel-history">
+    <div id="historyList"></div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let state = {
+  apiKey: '',
+  model: 'claude-sonnet-4-6',
+  instructions: '',
+  styleExample: '',
+  history: []
+};
+
+// Load from localStorage on start
+function loadState() {
+  try {
+    const saved = localStorage.getItem('novelAdaptationState');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      state = { ...state, ...parsed };
+    }
+  } catch(e) {}
+
+  // Apply to UI
+  if (state.apiKey) {
+    document.getElementById('apiKey').value = state.apiKey;
+    updateApiStatus(true);
+  }
+  if (state.instructions) {
+    document.getElementById('instructions').value = state.instructions;
+    updateCharCount();
+  }
+  if (state.styleExample) {
+    document.getElementById('styleExample').value = state.styleExample;
+  }
+
+  selectModel(state.model);
+  renderHistory();
+}
+
+function saveState() {
+  localStorage.setItem('novelAdaptationState', JSON.stringify(state));
+}
+
+// ═══════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════
+function switchTab(tab) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+
+  if (tab === 'translate') updateProfileBadge();
+  if (tab === 'history') renderHistory();
+}
+
+// ═══════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════
+function toggleApiVisibility() {
+  const inp = document.getElementById('apiKey');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function saveApiKey() {
+  const key = document.getElementById('apiKey').value.trim();
+  if (!key) { showToast('❌ API key enter karo!'); return; }
+  state.apiKey = key;
+  saveState();
+  updateApiStatus(true);
+  showToast('✅ API Key saved!');
+}
+
+function updateApiStatus(ok) {
+  const dot = document.getElementById('apiDot');
+  const msg = document.getElementById('apiStatusMsg');
+  const headerDot = document.getElementById('statusDot');
+  const headerMsg = document.getElementById('statusText');
+
+  if (ok) {
+    dot.className = 'status-dot ok';
+    msg.textContent = 'API Key set hai ✓';
+    msg.style.color = 'var(--teal)';
+    headerDot.className = 'status-dot ok';
+    headerMsg.textContent = 'API Ready';
+    headerMsg.style.color = 'var(--teal)';
+  } else {
+    dot.className = 'status-dot err';
+    msg.textContent = 'Key nahi hai';
+    headerDot.className = 'status-dot err';
+    headerMsg.textContent = 'No API Key';
+  }
+}
+
+function selectModel(modelId) {
+  state.model = modelId;
+  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
+  const key = modelId.includes('opus') ? 'opus' : 'sonnet';
+  const el = document.getElementById('model-' + key);
+  if (el) el.classList.add('selected');
+}
+
+function saveSettings() {
+  const key = document.getElementById('apiKey').value.trim();
+  if (key) { state.apiKey = key; updateApiStatus(true); }
+
+  state.instructions = document.getElementById('instructions').value;
+  state.styleExample = document.getElementById('styleExample').value;
+
+  if (!state.instructions.trim()) {
+    showToast('⚠️ Instructions khaali hain!');
+    return;
+  }
+
+  saveState();
+  showToast('✅ Settings saved! Ab translate tab pe jao.');
+  setTimeout(() => switchTab('translate'), 800);
+}
+
+function updateCharCount() {
+  const val = document.getElementById('instructions').value;
+  document.getElementById('instrCount').textContent = val.length;
+  document.getElementById('instrTokens').textContent = Math.round(val.length / 4);
+}
+
+function updateProfileBadge() {
+  const modelName = state.model.includes('opus') ? 'Opus 4.6' : 'Sonnet 4.6';
+  document.getElementById('profileModel').textContent = modelName;
+}
+
+// ═══════════════════════════════════════
+// CHAPTER COUNT & COST ESTIMATE
+// ═══════════════════════════════════════
+function updateChapterCount() {
+  const val = document.getElementById('chapterInput').value;
+  const chars = val.length;
+  const inputTokens = Math.round(chars / 4);
+  const instrTokens = Math.round(state.instructions.length / 4);
+  const totalInput = inputTokens + instrTokens;
+  const estimatedOutput = Math.round(chars / 2.8); // Hindi slightly more
+
+  // Cost calculation
+  const isOpus = state.model.includes('opus');
+  const inputRate = isOpus ? 5 : 3;   // per million
+  const outputRate = isOpus ? 25 : 15;
+
+  const inputCost = (totalInput / 1_000_000) * inputRate;
+  const outputCost = (estimatedOutput / 1_000_000) * outputRate;
+  const totalUSD = inputCost + outputCost;
+  const totalINR = (totalUSD * 84).toFixed(2);
+
+  document.getElementById('chapterCount').textContent = chars;
+  document.getElementById('chapterTokens').textContent = totalInput;
+  document.getElementById('estCost').textContent = '₹' + totalINR;
+}
+
+// ═══════════════════════════════════════
+// TRANSLATION
+// ═══════════════════════════════════════
+async function startTranslation() {
+  const chapter = document.getElementById('chapterInput').value.trim();
+
+  if (!state.apiKey) {
+    showError('❌ Pehle Settings mein API Key save karo!');
+    return;
+  }
+  if (!state.instructions) {
+    showError('⚠️ Settings mein Instructions fill karo pehle!');
+    return;
+  }
+  if (!chapter) {
+    showError('📄 Chapter text paste karo!');
+    return;
+  }
+
+  // UI loading state
+  setLoading(true);
+  hideError();
+  document.getElementById('outputContainer').classList.remove('show');
+
+  // Build system prompt
+  let systemPrompt = state.instructions;
+  if (state.styleExample) {
+    systemPrompt += `\n\n--- STYLE EXAMPLE ---\nNiche ek perfectly translated example hai. Isi style mein translate karo:\n\n${state.styleExample}`;
+  }
+
+  // Build user message
+  const userMessage = `Neeche diya gaya English novel chapter ko Hindi mein translate karo. Apni saari instructions follow karo:\n\n---\n${chapter}\n---`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': state.apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: state.model,
+        max_tokens: 8000,
+        system: systemPrompt,
+        messages: [
+          { role: 'user', content: userMessage }
+        ]
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errMsg = data?.error?.message || 'API error aaya';
+      showError('❌ API Error: ' + errMsg);
+      setLoading(false);
+      return;
+    }
+
+    const translatedText = data.content?.[0]?.text || '';
+    const usage = data.usage || {};
+
+    // Show output
+    document.getElementById('outputBox').textContent = translatedText;
+    document.getElementById('outputContainer').classList.add('show');
+
+    // Token stats
+    const inputTok = usage.input_tokens || 0;
+    const outputTok = usage.output_tokens || 0;
+    const isOpus = state.model.includes('opus');
+    const costUSD = (inputTok / 1_000_000) * (isOpus ? 5 : 3) +
+                    (outputTok / 1_000_000) * (isOpus ? 25 : 15);
+    const costINR = (costUSD * 84).toFixed(2);
+
+    document.getElementById('statInput').textContent = inputTok.toLocaleString();
+    document.getElementById('statOutput').textContent = outputTok.toLocaleString();
+    document.getElementById('statCost').textContent = '₹' + costINR;
+
+    // Save to history
+    const historyEntry = {
+      id: Date.now(),
+      date: new Date().toLocaleString('hi-IN'),
+      model: state.model,
+      inputTokens: inputTok,
+      outputTokens: outputTok,
+      costINR: costINR,
+      chapterPreview: chapter.substring(0, 100) + '...',
+      translation: translatedText
+    };
+    state.history.unshift(historyEntry);
+    if (state.history.length > 50) state.history = state.history.slice(0, 50);
+    saveState();
+
+    showToast('✅ Translation complete!');
+
+  } catch (err) {
+    showError('❌ Network error: ' + err.message + '\n\nTip: API key check karo ya internet connection dekho.');
+  }
+
+  setLoading(false);
+}
+
+function setLoading(on) {
+  const btn = document.getElementById('translateBtn');
+  const bar = document.getElementById('loadingBar');
+  const msg = document.getElementById('loadingMsg');
+
+  btn.disabled = on;
+  btn.innerHTML = on
+    ? '⏳ Translating...'
+    : '🚀 Start Adaptation';
+
+  bar.classList.toggle('active', on);
+  msg.style.display = on ? 'block' : 'none';
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.textContent = msg;
+  box.classList.add('show');
+}
+
+function hideError() {
+  document.getElementById('errorBox').classList.remove('show');
+}
+
+// ═══════════════════════════════════════
+// OUTPUT ACTIONS
+// ═══════════════════════════════════════
+function copyOutput() {
+  const text = document.getElementById('outputBox').textContent;
+  navigator.clipboard.writeText(text).then(() => showToast('📋 Copied!'));
+}
+
+function downloadOutput() {
+  const text = document.getElementById('outputBox').textContent;
+  const date = new Date().toISOString().slice(0,10);
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `translation-${date}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('⬇️ Downloaded!');
+}
+
+// ═══════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════
+function renderHistory() {
+  const container = document.getElementById('historyList');
+
+  if (!state.history || state.history.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📚</div>
+        <div style="color:var(--text-dim);font-size:0.9rem;">Koi translation nahi hua abhi</div>
+        <div style="color:var(--text-muted);font-size:0.78rem;margin-top:8px;">Translate tab mein jaao aur pehla chapter karo!</div>
+      </div>`;
+    return;
+  }
+
+  const modelName = (m) => m.includes('opus') ? 'Opus 4.6' : 'Sonnet 4.6';
+
+  container.innerHTML = state.history.map(h => `
+    <div class="history-item" onclick="loadHistoryItem(${h.id})">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:0.85rem;font-weight:600;color:var(--text);">📄 Translation</div>
+        <div class="history-meta">${h.date} &nbsp;·&nbsp; ${modelName(h.model)} &nbsp;·&nbsp; ₹${h.costINR}</div>
+        <div class="history-preview">${h.chapterPreview}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-left:12px;">
+        <span style="font-size:0.7rem;color:var(--teal);">${h.inputTokens + h.outputTokens} tok</span>
+        <button class="btn-secondary" style="font-size:0.7rem;padding:4px 10px;" onclick="event.stopPropagation();deleteHistory(${h.id})">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function loadHistoryItem(id) {
+  const item = state.history.find(h => h.id === id);
+  if (!item) return;
+
+  switchTab('translate');
+  setTimeout(() => {
+    document.getElementById('outputBox').textContent = item.translation;
+    document.getElementById('outputContainer').classList.add('show');
+    document.getElementById('statInput').textContent = item.inputTokens;
+    document.getElementById('statOutput').textContent = item.outputTokens;
+    document.getElementById('statCost').textContent = '₹' + item.costINR;
+    showToast('📖 History item loaded!');
+  }, 200);
+}
+
+function deleteHistory(id) {
+  state.history = state.history.filter(h => h.id !== id);
+  saveState();
+  renderHistory();
+  showToast('🗑 Deleted!');
+}
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+loadState();
+</script>
+</body>
+</html>
