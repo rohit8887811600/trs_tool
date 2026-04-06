@@ -14,6 +14,8 @@
     --teal: #00c9a7;
     --teal-dim: #00c9a720;
     --teal-mid: #00c9a740;
+    --blue: #4f8ef0;
+    --blue-dim: #4f8ef020;
     --gold: #f0c040;
     --text: #e8e8f0;
     --text-dim: #888899;
@@ -24,38 +26,32 @@
     --radius: 12px;
     --radius-sm: 8px;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     background: var(--bg);
     color: var(--text);
     font-family: 'Noto Sans', sans-serif;
     min-height: 100vh;
-    overflow-x: hidden;
   }
-
-  /* Background texture */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     background:
       radial-gradient(ellipse 80% 50% at 20% 0%, #00c9a710 0%, transparent 60%),
-      radial-gradient(ellipse 60% 40% at 80% 100%, #00c9a708 0%, transparent 60%);
+      radial-gradient(ellipse 60% 40% at 80% 100%, #4f8ef008 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
   }
-
   .app {
     position: relative;
     z-index: 1;
     max-width: 900px;
     margin: 0 auto;
-    padding: 0 16px 60px;
+    padding: 0 16px 80px;
   }
 
-  /* ── HEADER ── */
+  /* HEADER */
   .header {
     display: flex;
     align-items: center;
@@ -64,7 +60,6 @@
     border-bottom: 1px solid var(--border);
     margin-bottom: 24px;
   }
-
   .header-title {
     font-family: 'Cinzel', serif;
     font-size: 1.4rem;
@@ -72,16 +67,9 @@
     color: var(--teal);
     letter-spacing: 0.05em;
   }
+  .header-sub { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
 
-  .header-sub {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
-
-  /* ── TABS ── */
+  /* TABS */
   .tabs {
     display: flex;
     gap: 8px;
@@ -91,78 +79,42 @@
     border-radius: var(--radius);
     border: 1px solid var(--border);
   }
-
   .tab {
-    flex: 1;
-    padding: 10px 16px;
+    flex: 1; padding: 10px 8px;
     border-radius: var(--radius-sm);
-    border: none;
-    cursor: pointer;
+    border: none; cursor: pointer;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.82rem; font-weight: 500;
     transition: all 0.2s;
-    background: transparent;
-    color: var(--text-dim);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    background: transparent; color: var(--text-dim);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
   }
+  .tab.active { background: var(--teal); color: #000; font-weight: 700; }
+  .tab:not(.active):hover { background: var(--surface2); color: var(--text); }
 
-  .tab.active {
-    background: var(--teal);
-    color: #000;
-    font-weight: 600;
-  }
-
-  .tab:not(.active):hover {
-    background: var(--surface2);
-    color: var(--text);
-  }
-
-  /* ── PANELS ── */
+  /* PANELS */
   .panel { display: none; }
-  .panel.active { display: block; }
+  .panel.active { display: block; animation: fadeIn 0.3s ease; }
 
-  /* ── SECTION CARD ── */
+  /* CARDS */
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 20px;
     margin-bottom: 16px;
-    transition: border-color 0.2s;
   }
-
-  .card:focus-within {
-    border-color: var(--border-teal);
-  }
-
+  .card:focus-within { border-color: var(--border-teal); }
   .card-label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--teal);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
   }
+  .card-label::after { content: ''; flex: 1; height: 1px; background: var(--border-teal); }
 
-  .card-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border-teal);
-  }
-
-  /* ── INPUTS ── */
-  input[type="text"],
-  input[type="password"],
-  textarea,
-  select {
+  /* INPUTS */
+  input[type="text"], input[type="password"], textarea, select {
     width: 100%;
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -173,435 +125,231 @@
     padding: 12px 14px;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
-    resize: none;
+    resize: vertical;
   }
-
   input:focus, textarea:focus, select:focus {
     border-color: var(--teal);
     box-shadow: 0 0 0 3px var(--teal-dim);
   }
+  input::placeholder, textarea::placeholder { color: var(--text-muted); }
+  select option { background: var(--surface2); }
 
-  input::placeholder, textarea::placeholder {
-    color: var(--text-muted);
-  }
-
-  select option {
-    background: var(--surface2);
-  }
-
-  /* ── API KEY SECTION ── */
-  .api-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .api-row input {
-    flex: 1;
-    font-family: monospace;
-    font-size: 0.8rem;
-    letter-spacing: 0.05em;
-  }
-
-  .btn-icon {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    color: var(--text-dim);
-    cursor: pointer;
-    padding: 12px 14px;
-    font-size: 1rem;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-
-  .btn-icon:hover {
-    border-color: var(--teal);
-    color: var(--teal);
-  }
-
-  .api-status {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.78rem;
-    margin-top: 10px;
-  }
-
-  .status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--text-muted);
-    flex-shrink: 0;
-  }
-
-  .status-dot.ok { background: var(--teal); box-shadow: 0 0 6px var(--teal); }
-  .status-dot.err { background: var(--red); }
-
-  /* ── MODEL SELECT ── */
-  .model-grid {
+  /* AI PROVIDER TOGGLE */
+  .provider-toggle {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 10px;
+    margin-bottom: 16px;
   }
+  .provider-card {
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--surface2);
+    text-align: center;
+  }
+  .provider-card.active-claude { border-color: var(--teal); background: var(--teal-dim); }
+  .provider-card.active-gemini { border-color: var(--blue); background: var(--blue-dim); }
+  .provider-card:hover:not(.active-claude):not(.active-gemini) {
+    border-color: var(--border-teal);
+  }
+  .provider-icon { font-size: 1.8rem; margin-bottom: 6px; }
+  .provider-name { font-weight: 700; font-size: 0.95rem; }
+  .provider-card.active-claude .provider-name { color: var(--teal); }
+  .provider-card.active-gemini .provider-name { color: var(--blue); }
+  .provider-tag {
+    font-size: 0.65rem;
+    border-radius: 4px;
+    padding: 2px 7px;
+    display: inline-block;
+    margin-top: 5px;
+    font-weight: 600;
+  }
+  .tag-paid { background: #f0c04020; color: var(--gold); border: 1px solid #f0c04040; }
+  .tag-free { background: #4caf5020; color: #4caf50; border: 1px solid #4caf5040; }
 
+  /* API KEY ROW */
+  .api-row { display: flex; gap: 8px; align-items: center; }
+  .api-row input { flex: 1; font-family: monospace; font-size: 0.8rem; }
+  .btn-icon {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text-dim);
+    cursor: pointer; padding: 12px 14px; font-size: 0.95rem;
+    transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
+  }
+  .btn-icon:hover { border-color: var(--teal); color: var(--teal); }
+
+  /* STATUS */
+  .api-status-row {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.78rem; margin-top: 10px;
+  }
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%; background: var(--text-muted); flex-shrink: 0;
+  }
+  .status-dot.ok { background: var(--teal); box-shadow: 0 0 6px var(--teal); }
+  .status-dot.ok-blue { background: var(--blue); box-shadow: 0 0 6px var(--blue); }
+  .status-dot.err { background: var(--red); }
+
+  /* MODEL GRID */
+  .model-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .model-card {
     background: var(--surface2);
     border: 2px solid var(--border);
     border-radius: var(--radius-sm);
     padding: 12px 14px;
-    cursor: pointer;
-    transition: all 0.2s;
+    cursor: pointer; transition: all 0.2s;
   }
-
-  .model-card.selected {
-    border-color: var(--teal);
-    background: var(--teal-dim);
-  }
-
-  .model-card:hover:not(.selected) {
-    border-color: var(--border-teal);
-  }
-
-  .model-name {
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--text);
-  }
-
-  .model-card.selected .model-name { color: var(--teal); }
-
-  .model-info {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    margin-top: 3px;
-  }
-
+  .model-card.sel-teal { border-color: var(--teal); background: var(--teal-dim); }
+  .model-card.sel-blue { border-color: var(--blue); background: var(--blue-dim); }
+  .model-card:hover:not(.sel-teal):not(.sel-blue) { border-color: #444; }
+  .model-name { font-weight: 600; font-size: 0.88rem; }
+  .model-card.sel-teal .model-name { color: var(--teal); }
+  .model-card.sel-blue .model-name { color: var(--blue); }
+  .model-info { font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; }
   .model-badge {
-    font-size: 0.65rem;
-    background: var(--teal-dim);
-    color: var(--teal);
-    border: 1px solid var(--border-teal);
-    border-radius: 4px;
-    padding: 1px 6px;
-    display: inline-block;
-    margin-top: 4px;
+    font-size: 0.63rem; border-radius: 4px;
+    padding: 1px 6px; display: inline-block; margin-top: 5px;
   }
+  .badge-teal { background: var(--teal-dim); color: var(--teal); border: 1px solid var(--border-teal); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid #4f8ef030; }
+  .badge-gold { background: #f0c04018; color: var(--gold); border: 1px solid #f0c04030; }
 
-  /* ── INSTRUCTIONS ── */
-  .instructions-area {
-    min-height: 220px;
-    font-size: 0.88rem;
-    line-height: 1.6;
-  }
+  /* INSTRUCTIONS */
+  .instructions-area { min-height: 200px; font-size: 0.88rem; line-height: 1.6; }
+  .char-count { text-align: right; font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; }
+  .info-text { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; margin-top: 8px; }
 
-  .char-count {
-    text-align: right;
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    margin-top: 6px;
-  }
-
-  /* ── TRANSLATION PANEL ── */
-  .profile-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-
+  /* PROFILE BADGE */
+  .profile-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
   .profile-badge {
-    background: var(--teal-dim);
-    border: 1px solid var(--border-teal);
-    color: var(--teal);
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    border-radius: 20px; padding: 6px 14px;
+    font-size: 0.8rem; font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
   }
+  .badge-claude { background: var(--teal-dim); border: 1px solid var(--border-teal); color: var(--teal); }
+  .badge-gemini { background: var(--blue-dim); border: 1px solid #4f8ef030; color: var(--blue); }
 
-  .chapter-area {
-    min-height: 200px;
-    font-size: 0.88rem;
-    line-height: 1.7;
-  }
+  /* CHAPTER */
+  .chapter-area { min-height: 180px; font-size: 0.88rem; line-height: 1.7; }
 
-  /* ── BUTTONS ── */
+  /* BUTTONS */
   .btn-primary {
-    width: 100%;
-    background: var(--teal);
-    color: #000;
-    border: none;
+    width: 100%; border: none;
     border-radius: var(--radius);
     padding: 16px;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
+    font-size: 1rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
     letter-spacing: 0.03em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
     margin-top: 16px;
   }
-
-  .btn-primary:hover:not(:disabled) {
-    background: #00e0bb;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 20px var(--teal-mid);
-  }
-
-  .btn-primary:disabled {
-    background: var(--surface3);
-    color: var(--text-muted);
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-  }
+  .btn-claude { background: var(--teal); color: #000; }
+  .btn-claude:hover:not(:disabled) { background: #00e0bb; transform: translateY(-1px); box-shadow: 0 4px 20px var(--teal-mid); }
+  .btn-gemini { background: var(--blue); color: #fff; }
+  .btn-gemini:hover:not(:disabled) { background: #6fa3f5; transform: translateY(-1px); box-shadow: 0 4px 20px #4f8ef040; }
+  .btn-primary:disabled { background: var(--surface3) !important; color: var(--text-muted) !important; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
 
   .btn-secondary {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    color: var(--text-dim);
-    padding: 8px 16px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text-dim);
+    padding: 8px 16px; font-family: 'Noto Sans', sans-serif;
+    font-size: 0.82rem; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--teal); color: var(--teal); }
+
+  /* SAVE BTN */
+  .btn-save {
+    width: 100%; background: var(--surface2);
+    border: 1px solid var(--teal); border-radius: var(--radius);
+    color: var(--teal); padding: 14px;
     font-family: 'Noto Sans', sans-serif;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
+    font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    margin-top: 16px;
   }
+  .btn-save:hover { background: var(--teal-dim); }
 
-  .btn-secondary:hover {
-    border-color: var(--teal);
-    color: var(--teal);
-  }
-
-  /* ── LOADING ── */
-  .loading-bar {
-    display: none;
-    width: 100%;
-    height: 3px;
-    background: var(--surface2);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-top: 12px;
-  }
-
+  /* LOADING */
+  .loading-bar { display: none; width: 100%; height: 3px; background: var(--surface2); border-radius: 2px; overflow: hidden; margin-top: 12px; }
   .loading-bar.active { display: block; }
-
+  .loading-bar.bar-teal::after { background: linear-gradient(90deg, transparent, var(--teal), transparent); }
+  .loading-bar.bar-blue::after { background: linear-gradient(90deg, transparent, var(--blue), transparent); }
   .loading-bar::after {
-    content: '';
-    display: block;
-    width: 40%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, var(--teal), transparent);
+    content: ''; display: block; width: 40%; height: 100%;
     animation: loading 1.4s ease-in-out infinite;
   }
+  @keyframes loading { 0% { transform: translateX(-150%); } 100% { transform: translateX(350%); } }
 
-  @keyframes loading {
-    0% { transform: translateX(-150%); }
-    100% { transform: translateX(350%); }
-  }
-
-  /* ── OUTPUT ── */
-  .output-container {
-    display: none;
-    margin-top: 16px;
-    animation: fadeIn 0.4s ease;
-  }
-
+  /* OUTPUT */
+  .output-container { display: none; margin-top: 16px; animation: fadeIn 0.4s ease; }
   .output-container.show { display: block; }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .output-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-  }
-
-  .output-title {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--teal);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .output-actions {
-    display: flex;
-    gap: 8px;
-  }
-
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .output-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+  .output-title { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); display: flex; align-items: center; gap: 8px; }
+  .output-actions { display: flex; gap: 8px; }
   .output-box {
-    background: var(--surface2);
-    border: 1px solid var(--border-teal);
-    border-radius: var(--radius);
-    padding: 20px;
+    background: var(--surface2); border: 1px solid var(--border-teal);
+    border-radius: var(--radius); padding: 20px;
     font-family: 'Noto Sans Devanagari', 'Noto Sans', sans-serif;
-    font-size: 0.95rem;
-    line-height: 1.9;
-    color: var(--text);
-    white-space: pre-wrap;
-    max-height: 500px;
-    overflow-y: auto;
+    font-size: 0.95rem; line-height: 1.9; color: var(--text);
+    white-space: pre-wrap; max-height: 500px; overflow-y: auto;
   }
+  .output-box::-webkit-scrollbar { width: 5px; }
+  .output-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-  .output-box::-webkit-scrollbar {
-    width: 6px;
-  }
-  .output-box::-webkit-scrollbar-track { background: var(--surface2); }
-  .output-box::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 3px;
-  }
+  /* TOKEN STATS */
+  .token-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+  .stat-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; text-align: center; }
+  .stat-value { font-size: 1.1rem; font-weight: 700; color: var(--teal); }
+  .stat-label { font-size: 0.63rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
 
-  /* ── TOKEN STATS ── */
-  .token-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-top: 12px;
-  }
-
-  .stat-box {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    text-align: center;
-  }
-
-  .stat-value {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--teal);
-  }
-
-  .stat-label {
-    font-size: 0.65rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-top: 2px;
-  }
-
-  /* ── HISTORY ── */
+  /* HISTORY */
   .history-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 16px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: border-color 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
+    margin-bottom: 10px; cursor: pointer; transition: border-color 0.2s;
+    display: flex; align-items: center; justify-content: space-between;
   }
+  .history-item:hover { border-color: var(--border-teal); }
+  .history-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
+  .history-preview { font-size: 0.82rem; color: var(--text-dim); margin-top: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+  .empty-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.4; }
 
-  .history-item:hover {
-    border-color: var(--border-teal);
-  }
-
-  .history-meta {
-    font-size: 0.72rem;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
-
-  .history-preview {
-    font-size: 0.82rem;
-    color: var(--text-dim);
-    margin-top: 6px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text-muted);
-  }
-
-  .empty-icon {
-    font-size: 3rem;
-    margin-bottom: 12px;
-    opacity: 0.4;
-  }
-
-  /* ── TOAST ── */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: var(--surface3);
-    border: 1px solid var(--border-teal);
-    color: var(--teal);
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    transition: transform 0.3s ease;
-    z-index: 100;
-    white-space: nowrap;
-  }
-
-  .toast.show {
-    transform: translateX(-50%) translateY(0);
-  }
-
-  /* ── ERROR ── */
+  /* ERROR */
   .error-box {
-    background: #ff4f4f15;
-    border: 1px solid #ff4f4f40;
-    border-radius: var(--radius-sm);
-    padding: 12px 16px;
-    color: #ff8888;
-    font-size: 0.85rem;
-    margin-top: 12px;
-    display: none;
+    background: #ff4f4f12; border: 1px solid #ff4f4f40;
+    border-radius: var(--radius-sm); padding: 12px 16px;
+    color: #ff8888; font-size: 0.85rem; margin-top: 12px;
+    display: none; line-height: 1.5;
   }
-
   .error-box.show { display: block; }
 
-  /* ── SCROLLBAR ── */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-  /* ── DIVIDER ── */
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 20px 0;
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--surface3); border: 1px solid var(--border-teal);
+    color: var(--teal); padding: 10px 22px;
+    border-radius: 20px; font-size: 0.85rem;
+    transition: transform 0.3s ease; z-index: 100; white-space: nowrap;
   }
+  .toast.show { transform: translateX(-50%) translateY(0); }
 
-  .info-text {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    line-height: 1.5;
-    margin-top: 8px;
-  }
+  /* MISC */
+  .divider { height: 1px; background: var(--border); margin: 18px 0; }
+  .loading-msg { font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-top: 8px; display: none; }
+  #headerStatus { display: flex; align-items: center; gap: 6px; }
 
-  @media (max-width: 500px) {
+  @media (max-width: 480px) {
     .model-grid { grid-template-columns: 1fr; }
     .token-stats { grid-template-columns: 1fr 1fr; }
+    .provider-toggle { grid-template-columns: 1fr 1fr; }
   }
 </style>
 </head>
@@ -614,566 +362,595 @@
       <div class="header-title">📖 Novel Adaptation</div>
       <div class="header-sub">AI Translation Tool</div>
     </div>
-    <div id="apiIndicator" class="api-status">
-      <div class="status-dot" id="statusDot"></div>
-      <span id="statusText" style="font-size:0.75rem;color:var(--text-muted)">API Not Set</span>
+    <div id="headerStatus">
+      <div class="status-dot" id="hDot"></div>
+      <span id="hMsg" style="font-size:0.75rem;color:var(--text-muted)">Not Ready</span>
     </div>
   </div>
 
   <!-- TABS -->
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('settings')" id="tab-settings">
-      ⚙️ Settings
-    </button>
-    <button class="tab" onclick="switchTab('translate')" id="tab-translate">
-      📝 Translate
-    </button>
-    <button class="tab" onclick="switchTab('history')" id="tab-history">
-      🕐 History
-    </button>
+    <button class="tab active" onclick="switchTab('settings')" id="tab-settings">⚙️ Settings</button>
+    <button class="tab" onclick="switchTab('translate')" id="tab-translate">📝 Translate</button>
+    <button class="tab" onclick="switchTab('history')" id="tab-history">🕐 History</button>
   </div>
 
-  <!-- ═══════════ SETTINGS PANEL ═══════════ -->
+  <!-- ═══════════ SETTINGS ═══════════ -->
   <div class="panel active" id="panel-settings">
+
+    <!-- AI PROVIDER -->
+    <div class="card">
+      <div class="card-label">🤖 AI Provider Chuno</div>
+      <div class="provider-toggle">
+        <div class="provider-card" id="prov-gemini" onclick="selectProvider('gemini')">
+          <div class="provider-icon">✨</div>
+          <div class="provider-name">Gemini</div>
+          <div class="provider-tag tag-free">FREE</div>
+        </div>
+        <div class="provider-card" id="prov-claude" onclick="selectProvider('claude')">
+          <div class="provider-icon">🧠</div>
+          <div class="provider-name">Claude</div>
+          <div class="provider-tag tag-paid">PAID</div>
+        </div>
+      </div>
+      <div id="providerNote" class="info-text"></div>
+    </div>
 
     <!-- API KEY -->
     <div class="card">
-      <div class="card-label">🔑 AI Configuration</div>
+      <div class="card-label" id="apiLabel">🔑 API Key</div>
       <div class="api-row">
-        <input type="password" id="apiKey" placeholder="sk-ant-api03-..." />
-        <button class="btn-icon" onclick="toggleApiVisibility()">👁</button>
-        <button class="btn-icon" onclick="saveApiKey()">💾</button>
+        <input type="password" id="apiKey" placeholder="API key yahan paste karo..." />
+        <button class="btn-icon" onclick="toggleVis()">👁</button>
+        <button class="btn-icon" onclick="saveKey()">💾</button>
       </div>
-      <div class="api-status" style="margin-top:10px;">
-        <div class="status-dot" id="apiDot"></div>
-        <span id="apiStatusMsg" style="font-size:0.78rem;color:var(--text-muted);">Key save karo</span>
+      <div class="api-status-row">
+        <div class="status-dot" id="keyDot"></div>
+        <span id="keyMsg" style="color:var(--text-muted)">Key save karo</span>
       </div>
+      <div class="info-text" id="keyHelpText" style="margin-top:10px;"></div>
     </div>
 
-    <!-- MODEL SELECTION -->
-    <div class="card">
-      <div class="card-label">🤖 AI Model</div>
-      <div class="model-grid">
-        <div class="model-card selected" id="model-sonnet" onclick="selectModel('claude-sonnet-4-6')">
-          <div class="model-name">Sonnet 4.6</div>
-          <div class="model-info">Balanced · Fast</div>
-          <div class="model-badge">⭐ Recommended</div>
-        </div>
-        <div class="model-card" id="model-opus" onclick="selectModel('claude-opus-4-6')">
-          <div class="model-name">Opus 4.6</div>
-          <div class="model-info">Most Capable</div>
-          <div class="model-badge">💎 Premium</div>
-        </div>
-      </div>
-      <div class="info-text" style="margin-top:10px;">
-        💡 Sonnet = ~₹5/chapter &nbsp;|&nbsp; Opus = ~₹8.6/chapter (BTTH jaisi novel ke liye)
-      </div>
+    <!-- MODEL -->
+    <div class="card" id="modelCard">
+      <div class="card-label">⚡ Model Chuno</div>
+      <div class="model-grid" id="modelGrid"></div>
+      <div class="info-text" id="modelNote" style="margin-top:10px;"></div>
     </div>
 
     <!-- INSTRUCTIONS -->
     <div class="card">
       <div class="card-label">📋 Translation Instructions</div>
-      <textarea
-        class="instructions-area"
-        id="instructions"
+      <textarea class="instructions-area" id="instructions"
         placeholder="Yahan apni poori instructions paste karo...
 
 Jaise:
-- Translate into audiobook-friendly Hindi
-- Use modern colloquial language
-- Character name rules: Xiao Yan → ध्रुव
-- Don't use तू, तेरे — use तुम, तुम्हारे
-- Fantasy audiobook style
-- Dialogue structure rules..."
-        oninput="updateCharCount()"
-      ></textarea>
+• Translate into audiobook-friendly Hindi
+• Use modern colloquial language (tum/tumhare, NOT tu/tere)
+• Character name rules: Xiao Yan → ध्रुव, Xiao Clan → शौर्य दल
+• Fantasy audiobook style — Cultural Adaptation
+• Dialogue pehle, description baad mein
+• Modern colloquial Hindi with dramatic flair..."
+        oninput="updateInstrCount()"></textarea>
       <div class="char-count">
-        <span id="instrCount">0</span> characters
-        &nbsp;·&nbsp;
-        ~<span id="instrTokens">0</span> tokens
+        <span id="instrChars">0</span> chars &nbsp;·&nbsp; ~<span id="instrTok">0</span> tokens
       </div>
     </div>
 
     <!-- STYLE EXAMPLE -->
     <div class="card">
-      <div class="card-label">✨ Style Example (Optional)</div>
-      <textarea
-        style="min-height:120px;font-size:0.85rem;"
-        id="styleExample"
-        placeholder="Ek perfectly translated example paste karo (optional lekin recommended).
-
-AI iska style analyze karke baaki translations mein same tone follow karega..."
-      ></textarea>
-      <div class="info-text">
-        🎯 Yeh cache hoga — har chapter mein free mein reuse hoga
-      </div>
+      <div class="card-label">✨ Style Example <span style="font-weight:400;color:var(--text-muted)">(Optional)</span></div>
+      <textarea style="min-height:110px;font-size:0.85rem;" id="styleExample"
+        placeholder="Ek perfectly translated example paste karo — AI isi style ko follow karega..."></textarea>
+      <div class="info-text">🎯 Better results ke liye strongly recommended</div>
     </div>
 
-    <button class="btn-primary" onclick="saveSettings()">
-      💾 Save Settings
-    </button>
-
+    <button class="btn-save" onclick="saveSettings()">💾 Settings Save Karo</button>
   </div>
 
-  <!-- ═══════════ TRANSLATE PANEL ═══════════ -->
+  <!-- ═══════════ TRANSLATE ═══════════ -->
   <div class="panel" id="panel-translate">
 
-    <!-- Profile info -->
     <div class="profile-row">
-      <div class="profile-badge">
-        🌐 <span id="profileModel">Sonnet 4.6</span> &nbsp;·&nbsp; Hindi
-      </div>
+      <div class="profile-badge" id="profileBadge">🌐 Loading...</div>
       <button class="btn-secondary" onclick="switchTab('settings')">✏️ Edit</button>
     </div>
 
-    <!-- Chapter Input -->
     <div class="card">
       <div class="card-label">📄 Chapter Text</div>
-      <textarea
-        class="chapter-area"
-        id="chapterInput"
+      <textarea class="chapter-area" id="chapterInput"
         placeholder="Yahan English novel chapter paste karo...
 
-(BTTH, TGR, ya koi bhi novel ka chapter)"
-        oninput="updateChapterCount()"
-      ></textarea>
+(BTTH, TGR, WDQK, ya koi bhi novel ka chapter)"
+        oninput="updateChapterCount()"></textarea>
       <div class="char-count">
-        <span id="chapterCount">0</span> characters
-        &nbsp;·&nbsp;
-        ~<span id="chapterTokens">0</span> input tokens
-        &nbsp;·&nbsp;
-        Est. cost: <span id="estCost">₹0</span>
+        <span id="chChars">0</span> chars &nbsp;·&nbsp;
+        ~<span id="chTok">0</span> input tokens &nbsp;·&nbsp;
+        Est: <span id="chCost">₹0</span>
       </div>
     </div>
 
-    <!-- Translate Button -->
-    <button class="btn-primary" id="translateBtn" onclick="startTranslation()">
+    <button class="btn-primary btn-claude" id="translateBtn" onclick="startTranslation()">
       🚀 Start Adaptation
     </button>
 
-    <!-- Loading -->
-    <div class="loading-bar" id="loadingBar"></div>
-    <div id="loadingMsg" style="font-size:0.8rem;color:var(--text-muted);text-align:center;margin-top:8px;display:none;">
-      ✨ AI translation chal rahi hai...
-    </div>
+    <div class="loading-bar" id="loadBar"></div>
+    <div class="loading-msg" id="loadMsg">✨ AI translation chal rahi hai...</div>
 
-    <!-- Error -->
     <div class="error-box" id="errorBox"></div>
 
-    <!-- Output -->
-    <div class="output-container" id="outputContainer">
+    <div class="output-container" id="outputWrap">
       <div class="output-header">
         <div class="output-title">✅ Hindi Translation</div>
         <div class="output-actions">
-          <button class="btn-secondary" onclick="copyOutput()">📋 Copy</button>
-          <button class="btn-secondary" onclick="downloadOutput()">⬇️ Download</button>
+          <button class="btn-secondary" onclick="copyOut()">📋 Copy</button>
+          <button class="btn-secondary" onclick="downloadOut()">⬇️ Save</button>
         </div>
       </div>
       <div class="output-box" id="outputBox"></div>
-
-      <!-- Token Stats -->
-      <div class="token-stats" id="tokenStats">
+      <div class="token-stats">
         <div class="stat-box">
-          <div class="stat-value" id="statInput">—</div>
+          <div class="stat-value" id="sTokIn">—</div>
           <div class="stat-label">Input Tokens</div>
         </div>
         <div class="stat-box">
-          <div class="stat-value" id="statOutput">—</div>
+          <div class="stat-value" id="sTokOut">—</div>
           <div class="stat-label">Output Tokens</div>
         </div>
         <div class="stat-box">
-          <div class="stat-value" id="statCost">—</div>
-          <div class="stat-label">Cost (₹)</div>
+          <div class="stat-value" id="sCost">—</div>
+          <div class="stat-label">Cost</div>
         </div>
       </div>
     </div>
-
   </div>
 
-  <!-- ═══════════ HISTORY PANEL ═══════════ -->
+  <!-- ═══════════ HISTORY ═══════════ -->
   <div class="panel" id="panel-history">
-    <div id="historyList"></div>
+    <div id="histList"></div>
   </div>
 
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════
+// ══════════════════════════════════════
 // STATE
-// ═══════════════════════════════════════
-let state = {
+// ══════════════════════════════════════
+let S = {
+  provider: 'gemini',   // 'gemini' or 'claude'
+  model: '',
   apiKey: '',
-  model: 'claude-sonnet-4-6',
   instructions: '',
   styleExample: '',
   history: []
 };
 
-// Load from localStorage on start
-function loadState() {
+const MODELS = {
+  gemini: [
+    { id: 'gemini-2.5-flash-preview-04-17', name: 'Gemini 2.5 Flash', info: 'Fast · Best Free', badge: '⭐ Recommended', badgeClass: 'badge-blue' },
+    { id: 'gemini-2.5-pro-preview-03-25',  name: 'Gemini 2.5 Pro',   info: 'Most Capable',    badge: '💎 Premium',     badgeClass: 'badge-gold' },
+  ],
+  claude: [
+    { id: 'claude-sonnet-4-6', name: 'Sonnet 4.6', info: 'Balanced · ~₹5/chapter', badge: '⭐ Recommended', badgeClass: 'badge-teal' },
+    { id: 'claude-opus-4-6',   name: 'Opus 4.6',   info: 'Best · ~₹8.6/chapter',   badge: '💎 Premium',     badgeClass: 'badge-gold' },
+  ]
+};
+
+const PROVIDER_NOTES = {
+  gemini: '✅ Gemini FREE tier mein kaafi generous hai — testing ke liye best. API key: <a href="https://aistudio.google.com" target="_blank" style="color:var(--blue)">aistudio.google.com</a> → Get API Key',
+  claude: '💳 Claude paid hai. $5 free credits milte hain naye account par. Console: <a href="https://console.anthropic.com" target="_blank" style="color:var(--teal)">console.anthropic.com</a>'
+};
+
+const KEY_HELP = {
+  gemini: '🔗 aistudio.google.com → Sign in → Get API Key → Free mein milta hai',
+  claude: '🔗 console.anthropic.com → API Keys → Create Key → Billing mein credits chahiye'
+};
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+function init() {
   try {
-    const saved = localStorage.getItem('novelAdaptationState');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      state = { ...state, ...parsed };
-    }
+    const saved = localStorage.getItem('novelTool_v2');
+    if (saved) S = { ...S, ...JSON.parse(saved) };
   } catch(e) {}
 
-  // Apply to UI
-  if (state.apiKey) {
-    document.getElementById('apiKey').value = state.apiKey;
-    updateApiStatus(true);
-  }
-  if (state.instructions) {
-    document.getElementById('instructions').value = state.instructions;
-    updateCharCount();
-  }
-  if (state.styleExample) {
-    document.getElementById('styleExample').value = state.styleExample;
-  }
+  selectProvider(S.provider || 'gemini', true);
 
-  selectModel(state.model);
+  if (S.apiKey) { document.getElementById('apiKey').value = S.apiKey; markKeyOk(); }
+  if (S.instructions) { document.getElementById('instructions').value = S.instructions; updateInstrCount(); }
+  if (S.styleExample) document.getElementById('styleExample').value = S.styleExample;
+
   renderHistory();
 }
 
-function saveState() {
-  localStorage.setItem('novelAdaptationState', JSON.stringify(state));
-}
+function save() { localStorage.setItem('novelTool_v2', JSON.stringify(S)); }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════
 // TABS
-// ═══════════════════════════════════════
-function switchTab(tab) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('panel-' + tab).classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
-
-  if (tab === 'translate') updateProfileBadge();
-  if (tab === 'history') renderHistory();
+// ══════════════════════════════════════
+function switchTab(t) {
+  ['settings','translate','history'].forEach(x => {
+    document.getElementById('panel-'+x).classList.toggle('active', x===t);
+    document.getElementById('tab-'+x).classList.toggle('active', x===t);
+  });
+  if (t==='translate') updateProfileBadge();
+  if (t==='history') renderHistory();
 }
 
-// ═══════════════════════════════════════
-// SETTINGS
-// ═══════════════════════════════════════
-function toggleApiVisibility() {
+// ══════════════════════════════════════
+// PROVIDER
+// ══════════════════════════════════════
+function selectProvider(prov, silent) {
+  S.provider = prov;
+
+  // Toggle cards
+  document.getElementById('prov-gemini').className = 'provider-card' + (prov==='gemini' ? ' active-gemini' : '');
+  document.getElementById('prov-claude').className  = 'provider-card' + (prov==='claude'  ? ' active-claude'  : '');
+
+  // Provider note
+  document.getElementById('providerNote').innerHTML = PROVIDER_NOTES[prov];
+
+  // Key label & help
+  document.getElementById('apiLabel').textContent = prov==='gemini' ? '🔑 Gemini API Key' : '🔑 Claude API Key';
+  document.getElementById('keyHelpText').innerHTML = KEY_HELP[prov];
+
+  // Build model grid
+  renderModelGrid(prov);
+
+  // Default model
+  if (!S.model || !MODELS[prov].find(m=>m.id===S.model)) {
+    S.model = MODELS[prov][0].id;
+  }
+  highlightModel();
+
+  // Translate button color
+  const btn = document.getElementById('translateBtn');
+  btn.className = 'btn-primary ' + (prov==='gemini' ? 'btn-gemini' : 'btn-claude');
+
+  // Model note
+  document.getElementById('modelNote').textContent = prov==='gemini'
+    ? '💡 Gemini 2.5 Flash recommended — fast aur free. Daily limit: ~1500 requests.'
+    : '💡 Sonnet = ~₹5/chapter | Opus = ~₹8.6/chapter (BTTH jaisi novel ke liye)';
+
+  if (!silent) save();
+}
+
+function renderModelGrid(prov) {
+  const grid = document.getElementById('modelGrid');
+  grid.innerHTML = MODELS[prov].map(m => `
+    <div class="model-card" id="mc-${m.id}" onclick="selectModel('${m.id}')">
+      <div class="model-name">${m.name}</div>
+      <div class="model-info">${m.info}</div>
+      <div class="model-badge ${m.badgeClass}">${m.badge}</div>
+    </div>
+  `).join('');
+  highlightModel();
+}
+
+function selectModel(id) {
+  S.model = id;
+  highlightModel();
+  save();
+}
+
+function highlightModel() {
+  document.querySelectorAll('.model-card').forEach(c => {
+    c.className = 'model-card';
+  });
+  const el = document.getElementById('mc-' + S.model);
+  if (el) el.classList.add(S.provider==='gemini' ? 'sel-blue' : 'sel-teal');
+}
+
+// ══════════════════════════════════════
+// API KEY
+// ══════════════════════════════════════
+function toggleVis() {
   const inp = document.getElementById('apiKey');
-  inp.type = inp.type === 'password' ? 'text' : 'password';
+  inp.type = inp.type==='password' ? 'text' : 'password';
 }
 
-function saveApiKey() {
-  const key = document.getElementById('apiKey').value.trim();
-  if (!key) { showToast('❌ API key enter karo!'); return; }
-  state.apiKey = key;
-  saveState();
-  updateApiStatus(true);
-  showToast('✅ API Key saved!');
+function saveKey() {
+  const k = document.getElementById('apiKey').value.trim();
+  if (!k) { toast('❌ API Key enter karo!'); return; }
+  S.apiKey = k;
+  save();
+  markKeyOk();
+  toast('✅ API Key saved!');
 }
 
-function updateApiStatus(ok) {
-  const dot = document.getElementById('apiDot');
-  const msg = document.getElementById('apiStatusMsg');
-  const headerDot = document.getElementById('statusDot');
-  const headerMsg = document.getElementById('statusText');
-
-  if (ok) {
-    dot.className = 'status-dot ok';
-    msg.textContent = 'API Key set hai ✓';
-    msg.style.color = 'var(--teal)';
-    headerDot.className = 'status-dot ok';
-    headerMsg.textContent = 'API Ready';
-    headerMsg.style.color = 'var(--teal)';
-  } else {
-    dot.className = 'status-dot err';
-    msg.textContent = 'Key nahi hai';
-    headerDot.className = 'status-dot err';
-    headerMsg.textContent = 'No API Key';
-  }
+function markKeyOk() {
+  const isGemini = S.provider==='gemini';
+  document.getElementById('keyDot').className = 'status-dot ' + (isGemini ? 'ok-blue' : 'ok');
+  document.getElementById('keyMsg').textContent = 'API Key set hai ✓';
+  document.getElementById('keyMsg').style.color = isGemini ? 'var(--blue)' : 'var(--teal)';
+  document.getElementById('hDot').className = 'status-dot ' + (isGemini ? 'ok-blue' : 'ok');
+  document.getElementById('hMsg').textContent = 'API Ready';
+  document.getElementById('hMsg').style.color = isGemini ? 'var(--blue)' : 'var(--teal)';
 }
 
-function selectModel(modelId) {
-  state.model = modelId;
-  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
-  const key = modelId.includes('opus') ? 'opus' : 'sonnet';
-  const el = document.getElementById('model-' + key);
-  if (el) el.classList.add('selected');
-}
-
+// ══════════════════════════════════════
+// SETTINGS SAVE
+// ══════════════════════════════════════
 function saveSettings() {
-  const key = document.getElementById('apiKey').value.trim();
-  if (key) { state.apiKey = key; updateApiStatus(true); }
+  const k = document.getElementById('apiKey').value.trim();
+  if (k) { S.apiKey = k; markKeyOk(); }
+  S.instructions = document.getElementById('instructions').value.trim();
+  S.styleExample = document.getElementById('styleExample').value.trim();
 
-  state.instructions = document.getElementById('instructions').value;
-  state.styleExample = document.getElementById('styleExample').value;
+  if (!S.apiKey) { toast('⚠️ API Key missing!'); return; }
+  if (!S.instructions) { toast('⚠️ Instructions khaali hain!'); return; }
 
-  if (!state.instructions.trim()) {
-    showToast('⚠️ Instructions khaali hain!');
-    return;
-  }
-
-  saveState();
-  showToast('✅ Settings saved! Ab translate tab pe jao.');
-  setTimeout(() => switchTab('translate'), 800);
+  save();
+  toast('✅ Saved! Translate tab mein jao.');
+  setTimeout(() => switchTab('translate'), 700);
 }
 
-function updateCharCount() {
-  const val = document.getElementById('instructions').value;
-  document.getElementById('instrCount').textContent = val.length;
-  document.getElementById('instrTokens').textContent = Math.round(val.length / 4);
+// ══════════════════════════════════════
+// COUNTS
+// ══════════════════════════════════════
+function updateInstrCount() {
+  const v = document.getElementById('instructions').value;
+  document.getElementById('instrChars').textContent = v.length;
+  document.getElementById('instrTok').textContent = Math.round(v.length/4);
+  S.instructions = v;
 }
 
-function updateProfileBadge() {
-  const modelName = state.model.includes('opus') ? 'Opus 4.6' : 'Sonnet 4.6';
-  document.getElementById('profileModel').textContent = modelName;
-}
-
-// ═══════════════════════════════════════
-// CHAPTER COUNT & COST ESTIMATE
-// ═══════════════════════════════════════
 function updateChapterCount() {
-  const val = document.getElementById('chapterInput').value;
-  const chars = val.length;
-  const inputTokens = Math.round(chars / 4);
-  const instrTokens = Math.round(state.instructions.length / 4);
-  const totalInput = inputTokens + instrTokens;
-  const estimatedOutput = Math.round(chars / 2.8); // Hindi slightly more
+  const v = document.getElementById('chapterInput').value;
+  const instrTok = Math.round(S.instructions.length/4);
+  const chTok = Math.round(v.length/4);
+  const inTok = instrTok + chTok;
+  const outTok = Math.round(v.length/2.8);
 
-  // Cost calculation
-  const isOpus = state.model.includes('opus');
-  const inputRate = isOpus ? 5 : 3;   // per million
-  const outputRate = isOpus ? 25 : 15;
+  document.getElementById('chChars').textContent = v.length;
+  document.getElementById('chTok').textContent = inTok;
 
-  const inputCost = (totalInput / 1_000_000) * inputRate;
-  const outputCost = (estimatedOutput / 1_000_000) * outputRate;
-  const totalUSD = inputCost + outputCost;
-  const totalINR = (totalUSD * 84).toFixed(2);
-
-  document.getElementById('chapterCount').textContent = chars;
-  document.getElementById('chapterTokens').textContent = totalInput;
-  document.getElementById('estCost').textContent = '₹' + totalINR;
+  // Cost estimate
+  let costStr = 'Free';
+  if (S.provider === 'claude') {
+    const isOpus = S.model.includes('opus');
+    const usd = (inTok/1e6)*(isOpus?5:3) + (outTok/1e6)*(isOpus?25:15);
+    costStr = '₹' + (usd*84).toFixed(2);
+  }
+  document.getElementById('chCost').textContent = costStr;
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════
+// PROFILE BADGE
+// ══════════════════════════════════════
+function updateProfileBadge() {
+  const badge = document.getElementById('profileBadge');
+  const mObj = [...MODELS.gemini,...MODELS.claude].find(m=>m.id===S.model);
+  const mName = mObj ? mObj.name : S.model;
+  const icon = S.provider==='gemini' ? '✨' : '🧠';
+  badge.textContent = `${icon} ${mName} · Hindi`;
+  badge.className = 'profile-badge ' + (S.provider==='gemini' ? 'badge-gemini' : 'badge-claude');
+}
+
+// ══════════════════════════════════════
 // TRANSLATION
-// ═══════════════════════════════════════
+// ══════════════════════════════════════
 async function startTranslation() {
   const chapter = document.getElementById('chapterInput').value.trim();
+  if (!S.apiKey)       { showErr('❌ Pehle Settings mein API Key save karo!'); return; }
+  if (!S.instructions) { showErr('⚠️ Settings mein Instructions fill karo!'); return; }
+  if (!chapter)        { showErr('📄 Chapter text paste karo!'); return; }
 
-  if (!state.apiKey) {
-    showError('❌ Pehle Settings mein API Key save karo!');
-    return;
-  }
-  if (!state.instructions) {
-    showError('⚠️ Settings mein Instructions fill karo pehle!');
-    return;
-  }
-  if (!chapter) {
-    showError('📄 Chapter text paste karo!');
-    return;
-  }
-
-  // UI loading state
   setLoading(true);
-  hideError();
-  document.getElementById('outputContainer').classList.remove('show');
-
-  // Build system prompt
-  let systemPrompt = state.instructions;
-  if (state.styleExample) {
-    systemPrompt += `\n\n--- STYLE EXAMPLE ---\nNiche ek perfectly translated example hai. Isi style mein translate karo:\n\n${state.styleExample}`;
-  }
-
-  // Build user message
-  const userMessage = `Neeche diya gaya English novel chapter ko Hindi mein translate karo. Apni saari instructions follow karo:\n\n---\n${chapter}\n---`;
+  hideErr();
+  document.getElementById('outputWrap').classList.remove('show');
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': state.apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: state.model,
-        max_tokens: 8000,
-        system: systemPrompt,
-        messages: [
-          { role: 'user', content: userMessage }
-        ]
-      })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      const errMsg = data?.error?.message || 'API error aaya';
-      showError('❌ API Error: ' + errMsg);
-      setLoading(false);
-      return;
+    let result;
+    if (S.provider === 'gemini') {
+      result = await callGemini(chapter);
+    } else {
+      result = await callClaude(chapter);
     }
 
-    const translatedText = data.content?.[0]?.text || '';
-    const usage = data.usage || {};
+    document.getElementById('outputBox').textContent = result.text;
+    document.getElementById('outputWrap').classList.add('show');
 
-    // Show output
-    document.getElementById('outputBox').textContent = translatedText;
-    document.getElementById('outputContainer').classList.add('show');
+    document.getElementById('sTokIn').textContent  = result.inTok?.toLocaleString() || '—';
+    document.getElementById('sTokOut').textContent = result.outTok?.toLocaleString() || '—';
+    document.getElementById('sCost').textContent   = result.costStr || '—';
 
-    // Token stats
-    const inputTok = usage.input_tokens || 0;
-    const outputTok = usage.output_tokens || 0;
-    const isOpus = state.model.includes('opus');
-    const costUSD = (inputTok / 1_000_000) * (isOpus ? 5 : 3) +
-                    (outputTok / 1_000_000) * (isOpus ? 25 : 15);
-    const costINR = (costUSD * 84).toFixed(2);
-
-    document.getElementById('statInput').textContent = inputTok.toLocaleString();
-    document.getElementById('statOutput').textContent = outputTok.toLocaleString();
-    document.getElementById('statCost').textContent = '₹' + costINR;
-
-    // Save to history
-    const historyEntry = {
+    // Save history
+    S.history.unshift({
       id: Date.now(),
       date: new Date().toLocaleString('hi-IN'),
-      model: state.model,
-      inputTokens: inputTok,
-      outputTokens: outputTok,
-      costINR: costINR,
-      chapterPreview: chapter.substring(0, 100) + '...',
-      translation: translatedText
-    };
-    state.history.unshift(historyEntry);
-    if (state.history.length > 50) state.history = state.history.slice(0, 50);
-    saveState();
+      provider: S.provider,
+      model: S.model,
+      inTok: result.inTok,
+      outTok: result.outTok,
+      costStr: result.costStr,
+      preview: chapter.substring(0,120)+'...',
+      translation: result.text
+    });
+    if (S.history.length > 60) S.history = S.history.slice(0,60);
+    save();
+    toast('✅ Translation complete!');
 
-    showToast('✅ Translation complete!');
-
-  } catch (err) {
-    showError('❌ Network error: ' + err.message + '\n\nTip: API key check karo ya internet connection dekho.');
+  } catch(err) {
+    showErr('❌ Error: ' + err.message);
   }
 
   setLoading(false);
 }
 
+// ── GEMINI CALL ──
+async function callGemini(chapter) {
+  let systemPrompt = S.instructions;
+  if (S.styleExample) {
+    systemPrompt += `\n\n--- STYLE EXAMPLE ---\nNiche ek perfectly translated example hai. Isi style mein translate karo:\n\n${S.styleExample}`;
+  }
+
+  const userMsg = `Neeche diya gaya English novel chapter ko Hindi mein translate karo. Apni saari instructions follow karo:\n\n---\n${chapter}\n---`;
+
+  // Use generateContent endpoint
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${S.model}:generateContent?key=${S.apiKey}`;
+
+  const body = {
+    system_instruction: { parts: [{ text: systemPrompt }] },
+    contents: [{ role: 'user', parts: [{ text: userMsg }] }],
+    generationConfig: { maxOutputTokens: 8192, temperature: 0.7 }
+  };
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    const msg = data?.error?.message || 'Gemini API error';
+    throw new Error(msg);
+  }
+
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const inTok  = data.usageMetadata?.promptTokenCount || 0;
+  const outTok = data.usageMetadata?.candidatesTokenCount || 0;
+
+  return { text, inTok, outTok, costStr: 'Free ✓' };
+}
+
+// ── CLAUDE CALL ──
+async function callClaude(chapter) {
+  let systemPrompt = S.instructions;
+  if (S.styleExample) {
+    systemPrompt += `\n\n--- STYLE EXAMPLE ---\nNiche ek perfectly translated example hai. Isi style mein translate karo:\n\n${S.styleExample}`;
+  }
+
+  const userMsg = `Neeche diya gaya English novel chapter ko Hindi mein translate karo. Apni saari instructions follow karo:\n\n---\n${chapter}\n---`;
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': S.apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: S.model,
+      max_tokens: 8000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userMsg }]
+    })
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data?.error?.message || 'Claude API error');
+
+  const text = data.content?.[0]?.text || '';
+  const inTok  = data.usage?.input_tokens  || 0;
+  const outTok = data.usage?.output_tokens || 0;
+  const isOpus = S.model.includes('opus');
+  const usd = (inTok/1e6)*(isOpus?5:3) + (outTok/1e6)*(isOpus?25:15);
+  const costStr = '₹' + (usd*84).toFixed(2);
+
+  return { text, inTok, outTok, costStr };
+}
+
+// ══════════════════════════════════════
+// UI HELPERS
+// ══════════════════════════════════════
 function setLoading(on) {
   const btn = document.getElementById('translateBtn');
-  const bar = document.getElementById('loadingBar');
-  const msg = document.getElementById('loadingMsg');
-
+  const bar = document.getElementById('loadBar');
+  const msg = document.getElementById('loadMsg');
   btn.disabled = on;
-  btn.innerHTML = on
-    ? '⏳ Translating...'
-    : '🚀 Start Adaptation';
-
-  bar.classList.toggle('active', on);
+  btn.innerHTML = on ? '⏳ Translating...' : '🚀 Start Adaptation';
+  bar.className = 'loading-bar' + (on ? ' active bar-'+(S.provider==='gemini'?'blue':'teal') : '');
   msg.style.display = on ? 'block' : 'none';
 }
 
-function showError(msg) {
-  const box = document.getElementById('errorBox');
-  box.textContent = msg;
-  box.classList.add('show');
+function showErr(m) {
+  const b = document.getElementById('errorBox');
+  b.textContent = m; b.classList.add('show');
+}
+function hideErr() { document.getElementById('errorBox').classList.remove('show'); }
+
+function copyOut() {
+  navigator.clipboard.writeText(document.getElementById('outputBox').textContent)
+    .then(()=>toast('📋 Copied!'));
 }
 
-function hideError() {
-  document.getElementById('errorBox').classList.remove('show');
-}
-
-// ═══════════════════════════════════════
-// OUTPUT ACTIONS
-// ═══════════════════════════════════════
-function copyOutput() {
+function downloadOut() {
   const text = document.getElementById('outputBox').textContent;
-  navigator.clipboard.writeText(text).then(() => showToast('📋 Copied!'));
-}
-
-function downloadOutput() {
-  const text = document.getElementById('outputBox').textContent;
-  const date = new Date().toISOString().slice(0,10);
-  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
+  const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
   const a = document.createElement('a');
-  a.href = url;
-  a.download = `translation-${date}.txt`;
+  a.href = URL.createObjectURL(blob);
+  a.download = 'translation-' + new Date().toISOString().slice(0,10) + '.txt';
   a.click();
-  URL.revokeObjectURL(url);
-  showToast('⬇️ Downloaded!');
+  toast('⬇️ Downloaded!');
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════
 // HISTORY
-// ═══════════════════════════════════════
+// ══════════════════════════════════════
 function renderHistory() {
-  const container = document.getElementById('historyList');
-
-  if (!state.history || state.history.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">📚</div>
-        <div style="color:var(--text-dim);font-size:0.9rem;">Koi translation nahi hua abhi</div>
-        <div style="color:var(--text-muted);font-size:0.78rem;margin-top:8px;">Translate tab mein jaao aur pehla chapter karo!</div>
-      </div>`;
+  const c = document.getElementById('histList');
+  if (!S.history?.length) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">📚</div><div style="color:var(--text-dim)">Koi translation nahi hua abhi</div><div style="color:var(--text-muted);font-size:0.78rem;margin-top:8px">Translate tab mein jaao!</div></div>`;
     return;
   }
-
-  const modelName = (m) => m.includes('opus') ? 'Opus 4.6' : 'Sonnet 4.6';
-
-  container.innerHTML = state.history.map(h => `
-    <div class="history-item" onclick="loadHistoryItem(${h.id})">
+  const provIcon = p => p==='gemini' ? '✨' : '🧠';
+  const mName = id => {
+    const m = [...MODELS.gemini,...MODELS.claude].find(x=>x.id===id);
+    return m ? m.name : id;
+  };
+  c.innerHTML = S.history.map(h=>`
+    <div class="history-item" onclick="loadHist(${h.id})">
       <div style="flex:1;min-width:0;">
-        <div style="font-size:0.85rem;font-weight:600;color:var(--text);">📄 Translation</div>
-        <div class="history-meta">${h.date} &nbsp;·&nbsp; ${modelName(h.model)} &nbsp;·&nbsp; ₹${h.costINR}</div>
-        <div class="history-preview">${h.chapterPreview}</div>
+        <div style="font-size:0.85rem;font-weight:600;color:var(--text)">${provIcon(h.provider)} ${mName(h.model)}</div>
+        <div class="history-meta">${h.date} &nbsp;·&nbsp; ${h.costStr}</div>
+        <div class="history-preview">${h.preview}</div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-left:12px;">
-        <span style="font-size:0.7rem;color:var(--teal);">${h.inputTokens + h.outputTokens} tok</span>
-        <button class="btn-secondary" style="font-size:0.7rem;padding:4px 10px;" onclick="event.stopPropagation();deleteHistory(${h.id})">🗑</button>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;margin-left:12px;flex-shrink:0;">
+        <span style="font-size:0.7rem;color:var(--teal)">${((h.inTok||0)+(h.outTok||0)).toLocaleString()} tok</span>
+        <button class="btn-secondary" style="font-size:0.7rem;padding:4px 10px;" onclick="event.stopPropagation();delHist(${h.id})">🗑</button>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-function loadHistoryItem(id) {
-  const item = state.history.find(h => h.id === id);
-  if (!item) return;
-
+function loadHist(id) {
+  const h = S.history.find(x=>x.id===id);
+  if (!h) return;
   switchTab('translate');
-  setTimeout(() => {
-    document.getElementById('outputBox').textContent = item.translation;
-    document.getElementById('outputContainer').classList.add('show');
-    document.getElementById('statInput').textContent = item.inputTokens;
-    document.getElementById('statOutput').textContent = item.outputTokens;
-    document.getElementById('statCost').textContent = '₹' + item.costINR;
-    showToast('📖 History item loaded!');
+  setTimeout(()=>{
+    document.getElementById('outputBox').textContent = h.translation;
+    document.getElementById('outputWrap').classList.add('show');
+    document.getElementById('sTokIn').textContent  = h.inTok||'—';
+    document.getElementById('sTokOut').textContent = h.outTok||'—';
+    document.getElementById('sCost').textContent   = h.costStr||'—';
+    toast('📖 History loaded!');
   }, 200);
 }
 
-function deleteHistory(id) {
-  state.history = state.history.filter(h => h.id !== id);
-  saveState();
-  renderHistory();
-  showToast('🗑 Deleted!');
+function delHist(id) {
+  S.history = S.history.filter(x=>x.id!==id);
+  save(); renderHistory();
+  toast('🗑 Deleted!');
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════
 // TOAST
-// ═══════════════════════════════════════
-function showToast(msg) {
+// ══════════════════════════════════════
+function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  setTimeout(()=>t.classList.remove('show'), 2600);
 }
 
-// ═══════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════
-loadState();
+// START
+init();
 </script>
 </body>
 </html>
